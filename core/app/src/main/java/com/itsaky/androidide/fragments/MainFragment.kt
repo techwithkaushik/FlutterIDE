@@ -17,6 +17,7 @@ import com.itsaky.androidide.app.BaseApplication
 import com.itsaky.androidide.app.BaseIDEActivity
 import com.itsaky.androidide.common.databinding.LayoutDialogProgressBinding
 import com.itsaky.androidide.databinding.FragmentMainBinding
+import com.itsaky.androidide.flutter.FlutterProjectInspector
 import com.itsaky.androidide.models.MainScreenAction
 import com.itsaky.androidide.preferences.databinding.LayoutDialogTextInputBinding
 import com.itsaky.androidide.resources.R.string
@@ -63,6 +64,9 @@ class MainFragment : BaseFragment() {
           MainScreenAction.ACTION_CREATE_PROJECT -> showCreateProject()
           MainScreenAction.ACTION_OPEN_PROJECT -> pickDirectory()
           MainScreenAction.ACTION_CLONE_REPO -> cloneGitRepo()
+          MainScreenAction.ACTION_INSPECT_FLUTTER_PROJECT -> pickDirectory { root ->
+            inspectFlutterProject(root)
+          }
           MainScreenAction.ACTION_OPEN_TERMINAL -> startActivity(
             Intent(requireActivity(), TerminalActivity::class.java))
 
@@ -105,6 +109,43 @@ class MainFragment : BaseFragment() {
 
   fun openProject(root: File) {
     (requireActivity() as MainActivity).openProject(root)
+  }
+
+  private fun inspectFlutterProject(root: File) {
+    val info = FlutterProjectInspector.inspect(root)
+    val statusMessage = when (info.status) {
+      FlutterProjectInspector.Status.READY -> getString(string.flutter_project_status_ready)
+      FlutterProjectInspector.Status.INCOMPLETE -> getString(string.flutter_project_status_incomplete)
+      FlutterProjectInspector.Status.NOT_A_FLUTTER_PROJECT -> getString(string.flutter_project_status_not_flutter)
+      FlutterProjectInspector.Status.NOT_A_DIRECTORY -> getString(string.flutter_project_status_not_directory)
+    }
+    val yes = getString(android.R.string.yes)
+    val no = getString(android.R.string.no)
+    val markers = getString(
+      string.flutter_project_markers,
+      if (info.hasPubspec) yes else no,
+      if (info.hasMainDart) yes else no,
+      if (info.hasAndroidHost) yes else no,
+      if (info.hasTests) yes else no,
+      if (info.hasAssetsDirectory) yes else no
+    )
+    val message = buildString {
+      append(statusMessage)
+      append("\\n\\n")
+      append(getString(string.flutter_project_path, info.root.absolutePath))
+      append("\\n\\n")
+      append(markers)
+      if (info.issues.isNotEmpty()) {
+        append("\\n\\n")
+        append(info.issues.joinToString(separator = "\\n• ", prefix = "• "))
+      }
+    }
+
+    DialogUtils.newMaterialDialogBuilder(requireContext())
+      .setTitle(string.flutter_project_inspection_title)
+      .setMessage(message)
+      .setPositiveButton(android.R.string.ok, null)
+      .show()
   }
 
   private fun cloneGitRepo() {
