@@ -131,13 +131,13 @@ class MainFragment : BaseFragment() {
     )
     val message = buildString {
       append(statusMessage)
-      append("\\n\\n")
+      append("\n\n")
       append(getString(string.flutter_project_path, info.root.absolutePath))
-      append("\\n\\n")
+      append("\n\n")
       append(markers)
       if (info.issues.isNotEmpty()) {
-        append("\\n\\n")
-        append(info.issues.joinToString(separator = "\\n• ", prefix = "• "))
+        append("\n\n")
+        append(info.issues.joinToString(separator = "\n• ", prefix = "• "))
       }
     }
 
