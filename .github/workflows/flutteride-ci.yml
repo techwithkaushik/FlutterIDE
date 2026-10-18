@@ -37,23 +37,19 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Create ephemeral CI signing key
+      - name: Use repository debug development keystore
         run: |
+          test -s core/app/dev.keystore
           mkdir -p build/signing
-          keytool -genkeypair -noprompt \
-            -keystore build/signing/signing-key.jks \
-            -storepass flutteride-ci-only \
-            -keypass flutteride-ci-only \
-            -alias flutteride-ci \
-            -keyalg RSA -keysize 2048 -validity 2 \
-            -dname "CN=FlutterIDE CI, OU=CI, O=FlutterIDE, L=Local, ST=Local, C=IN"
+          cp core/app/dev.keystore build/signing/signing-key.jks
+          keytool -list -keystore build/signing/signing-key.jks -storepass android -alias androiddebugkey
 
       - name: Assemble debug APK
         run: ./gradlew :core:app:assembleDebug --no-daemon --stacktrace
         env:
-          IDE_SIGNING_ALIAS: flutteride-ci
-          IDE_SIGNING_STORE_PASS: flutteride-ci-only
-          IDE_SIGNING_KEY_PASS: flutteride-ci-only
+          IDE_SIGNING_ALIAS: androiddebugkey
+          IDE_SIGNING_STORE_PASS: android
+          IDE_SIGNING_KEY_PASS: android
 
       - name: Upload debug APK
         if: success()
