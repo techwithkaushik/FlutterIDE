@@ -1,9 +1,6 @@
 name: FlutterIDE baseline CI
 
 on:
-  push:
-    branches:
-      - "feature/**"
   pull_request:
     branches:
       - dev
