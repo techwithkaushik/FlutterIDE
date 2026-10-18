@@ -37,12 +37,17 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Use repository debug development keystore
+      - name: Create CI-only debug keystore
         run: |
-          test -s core/app/dev.keystore
           mkdir -p build/signing
-          cp core/app/dev.keystore build/signing/signing-key.jks
-          keytool -list -keystore build/signing/signing-key.jks -storepass android -alias androiddebugkey
+          keytool -genkeypair -noprompt \
+            -keystore build/signing/signing-key.jks \
+            -storepass android -keypass android \
+            -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=FlutterIDE Debug, OU=Development, O=FlutterIDE, L=Local, ST=Local, C=IN"
+          keytool -list -keystore build/signing/signing-key.jks \
+            -storepass android -alias androiddebugkey
 
       - name: Assemble debug APK
         run: ./gradlew :core:app:assembleDebug --no-daemon --stacktrace
