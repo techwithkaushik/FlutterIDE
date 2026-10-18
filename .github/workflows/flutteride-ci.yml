@@ -38,7 +38,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Use local debug signing for CI
-        run: printf 'ide.build.fdroid=true\n' > fdroid.properties
+        run: printf 'ide.build.fdroid=true\nide.build.fdroid.version=v2.7.1-beta\nide.build.fdroid.vercode=1\n' > fdroid.properties
 
       - name: Assemble debug APK
         run: ./gradlew :core:app:assembleDebug --no-daemon --stacktrace
