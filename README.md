@@ -22,7 +22,7 @@ GitHub Actions usage depends on repository settings, runner availability and Git
 
 ## Development and CI
 
-The existing Android host still uses Gradle while the migration is underway. Only the FlutterIDE baseline workflow is retained: it runs on migration-branch pushes, pull requests to `dev`, and manual dispatch. Legacy upstream release/publishing, Crowdin contributor, and workflow-run deletion workflows have been removed. Legacy source modules are being reviewed separately and will only be removed after dependency and call-site checks.
+The existing Android host still uses Gradle while the migration is underway. Only the FlutterIDE baseline workflow is retained: it runs on migration-branch pushes and manual dispatch. This avoids duplicate builds for a single push that also updates an open pull request. Legacy upstream release/publishing, Crowdin contributor, and workflow-run deletion workflows have been removed. Legacy source modules are being reviewed separately and will only be removed after dependency and call-site checks.
 
 - Main development branch: dev
 - Migration branch: feature/flutter-ide-transition
