@@ -67,4 +67,4 @@ Deliver a Flutter/Dart-first Android IDE that remains responsive on low-memory p
 
 ## Current status
 
-Phase 1 product definition is in place. Phase 2 has started: a filesystem-only Flutter project inspector and a home-screen inspection action are implemented with unit tests. The first CI attempt exposed an unpublished Sora editor snapshot dependency; the dependency was switched to the published 0.23.6 release, and the next CI run must verify compatibility. Dart editing, project creation, Dart analysis/formatting and the Actions dashboard are not implemented yet.
+Phase 1 product definition is in place. Phase 2 has started: a filesystem-only Flutter project inspector and a home-screen inspection action are implemented with unit tests. The first CI attempt exposed an unpublished Sora editor snapshot dependency; the published 0.23.6 release introduced Kotlin 2.1 metadata incompatible with this project's Kotlin 1.9.24 compiler, so the dependency is now pinned to published Sora Editor 0.23.4; CI must verify the downgrade. Dart editing, project creation, Dart analysis/formatting and the Actions dashboard are not implemented yet.
