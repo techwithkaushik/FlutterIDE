@@ -46,7 +46,9 @@ android {
   namespace = BuildConfig.packageName
 
   defaultConfig {
-    applicationId = BuildConfig.packageName
+    // Keep the legacy Kotlin/R namespace to avoid breaking generated R references.
+    // The installed Android application uses FlutterIDE's own package ID.
+    applicationId = "org.techwithkaushik.flutteride"
     vectorDrawables.useSupportLibrary = true
   }
 
