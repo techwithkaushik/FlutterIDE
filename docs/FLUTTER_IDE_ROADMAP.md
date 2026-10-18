@@ -8,7 +8,7 @@ Deliver a Flutter/Dart-first Android IDE that remains responsive on low-memory p
 
 - The current `dev` branch is still the archived AndroidIDE Gradle multi-module application, not a Flutter IDE.
 - The root project includes many AndroidIDE-specific modules and composite builds; removing them in one sweep would make the project difficult to build and debug.
-- The existing `.github/workflows/build.yml` is upstream-oriented: it builds debug and release APKs, runs unit/tooling/emulator tests, and includes publishing jobs that are not appropriate as the only validation path for a new fork.
+- The upstream release/publishing workflow, Crowdin contributor workflow, and manual workflow-run deletion utility were removed from this migration branch. A single least-privilege FlutterIDE baseline workflow remains for migration-branch pushes, pull requests to `dev`, and manual runs. Legacy source modules are intentionally retained until dependency/call-site analysis identifies safe removals.
 - The repository is reported by GitHub as roughly 967 MB. Git repository size is not the same as installed APK size or runtime RAM, so these must be measured separately.
 - Current source has a Git implementation dependency (JGit), but a user-facing GitHub Actions run dashboard is a separate feature and must be implemented and tested.
 
@@ -18,7 +18,7 @@ Deliver a Flutter/Dart-first Android IDE that remains responsive on low-memory p
 
 - Keep `dev` and `main` untouched; work in `feature/flutter-ide-transition`.
 - Define Flutter-first scope and migration checkpoints.
-- Add a fork-specific CI smoke workflow that builds the existing host app and runs available unit tests without release publishing or signing secrets.
+- Keep one fork-specific CI workflow that builds the existing host app and runs available unit tests without release publishing or signing secrets.
 - Capture the first CI result before structural refactors.
 
 ### Phase 2 — Flutter project foundation
