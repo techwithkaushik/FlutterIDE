@@ -67,4 +67,4 @@ Deliver a Flutter/Dart-first Android IDE that remains responsive on low-memory p
 
 ## Current status
 
-Phase 1 documentation and fork-specific CI setup are in progress. No Flutter editor, project manager or Actions dashboard should be considered implemented until its code and tests are present.
+Phase 1 product definition is in place. Phase 2 has started: a filesystem-only Flutter project inspector and a home-screen inspection action are implemented with unit tests. The first CI attempt exposed an unpublished Sora editor snapshot dependency; the dependency was switched to the published 0.23.6 release, and the next CI run must verify compatibility. Dart editing, project creation, Dart analysis/formatting and the Actions dashboard are not implemented yet.
