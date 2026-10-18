@@ -74,17 +74,24 @@ def main():
 
     remaining = []
     for name in tracked_paths():
+        # The migration script and documentation must mention the legacy name.
+        # Verify executable source/configuration rather than explanatory text.
+        if name == "scripts/migrate_package_namespace.py":
+            continue
+        if name.startswith(("docs/", ".github/")) or Path(name).name.lower() in {
+            "readme.md", "license", "license.md", "notice", "notice.md"
+        }:
+            continue
         path = Path(name)
         if not path.is_file():
             continue
         text = read_text(path)
         if text is None:
             continue
-        # Existing dependency group IDs are intentional and must remain unchanged.
+        # Existing dependency group IDs in the version catalog are intentional.
         checked = LEGACY_DEPENDENCY_COORDINATE.sub("external-dependency:", text)
         if OLD_DOTTED in checked or OLD_PATH in checked or OLD_PATH in name:
             remaining.append(name)
-
     print(f"Package migration: edited {edited} text files; moved {moved} tracked paths.")
     if remaining:
         print("Legacy package references remain:")
