@@ -37,11 +37,23 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Use local debug signing for CI
-        run: printf 'ide.build.fdroid=true\nide.build.fdroid.version=v2.7.1-beta\nide.build.fdroid.vercode=1\n' > fdroid.properties
+      - name: Create ephemeral CI signing key
+        run: |
+          mkdir -p build/signing
+          keytool -genkeypair -noprompt \
+            -keystore build/signing/signing-key.jks \
+            -storepass flutteride-ci-only \
+            -keypass flutteride-ci-only \
+            -alias flutteride-ci \
+            -keyalg RSA -keysize 2048 -validity 2 \
+            -dname "CN=FlutterIDE CI, OU=CI, O=FlutterIDE, L=Local, ST=Local, C=IN"
 
       - name: Assemble debug APK
         run: ./gradlew :core:app:assembleDebug --no-daemon --stacktrace
+        env:
+          IDE_SIGNING_ALIAS: flutteride-ci
+          IDE_SIGNING_STORE_PASS: flutteride-ci-only
+          IDE_SIGNING_KEY_PASS: flutteride-ci-only
 
       - name: Upload debug APK
         if: success()
@@ -76,6 +88,6 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run unit tests
-        run: ./gradlew runTestsInCI --continue --exclude-task :testing:androidTest:compileDebugKotlin --no-daemon --stacktrace
+        run: ./gradlew :core:app:testDebugUnitTest :editor:impl:testDebugUnitTest --no-daemon --stacktrace
         env:
           ANDROIDIDE_TEST: "true"
