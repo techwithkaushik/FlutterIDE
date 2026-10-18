@@ -559,4 +559,12 @@
   <string name="summary_open_source_licenses">View open source licenses.</string>
   <string name="idepref_jdkVersion_title">JDK version</string>
   <string name="idepref_jdkVersion_summary">Currently selected: %1$s (requires restart if changed)</string>
+  <string name="flutter_project_inspector">Inspect Flutter project</string>
+  <string name="flutter_project_inspection_title">Flutter project check</string>
+  <string name="flutter_project_status_ready">Flutter app structure detected. Dart editing and build integration are still being developed.</string>
+  <string name="flutter_project_status_incomplete">Flutter pubspec.yaml found, but lib/main.dart is missing. This may be a package/plugin or an incomplete app.</string>
+  <string name="flutter_project_status_not_flutter">No pubspec.yaml found. Select the root directory of a Flutter project.</string>
+  <string name="flutter_project_status_not_directory">The selected path is not an existing directory.</string>
+  <string name="flutter_project_path">Path: %1$s</string>
+  <string name="flutter_project_markers">Markers: pubspec.yaml=%1$s, lib/main.dart=%2$s, android/=%3$s, test/=%4$s, assets/=%5$s</string>
 </resources>
