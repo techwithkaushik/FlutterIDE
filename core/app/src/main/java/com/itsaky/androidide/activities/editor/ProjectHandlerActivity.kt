@@ -31,6 +31,7 @@ import com.itsaky.androidide.R
 import com.itsaky.androidide.R.string
 import com.itsaky.androidide.databinding.LayoutSearchProjectBinding
 import com.itsaky.androidide.flashbar.Flashbar
+import com.itsaky.androidide.flutter.FlutterProjectInspector
 import com.itsaky.androidide.fragments.sheets.ProgressSheet
 import com.itsaky.androidide.handlers.EditorBuildEventListener
 import com.itsaky.androidide.handlers.LspHandler.connectClient
@@ -314,6 +315,10 @@ abstract class ProjectHandlerActivity : BaseEditorActivity() {
   }
 
   fun initializeProject() {
+    if (prepareFlutterProjectWithoutGradle()) {
+      return
+    }
+
     val currentVariants = buildVariantsViewModel._buildVariants.value
 
     // no information about the build variants is available
@@ -355,6 +360,10 @@ abstract class ProjectHandlerActivity : BaseEditorActivity() {
    * @param buildVariants A map of project paths to the selected build variants.
    */
   fun initializeProject(buildVariants: Map<String, String>) {
+    if (prepareFlutterProjectWithoutGradle()) {
+      return
+    }
+
     val manager = ProjectManagerImpl.getInstance()
     val projectDir = manager.projectDir
     if (!projectDir.exists()) {
@@ -458,6 +467,12 @@ abstract class ProjectHandlerActivity : BaseEditorActivity() {
     Lookup.getDefault().update(BuildService.KEY_BUILD_SERVICE, service)
     service.setEventListener(mBuildEventListener)
 
+    // A Flutter root is not a Gradle root. Keep the existing editor/file tree
+    // available, but do not start Gradle tooling against the wrong directory.
+    if (prepareFlutterProjectWithoutGradle()) {
+      return
+    }
+
     if (!service.isToolingServerStarted()) {
       service.startToolingServer { pid ->
         memoryUsageWatcher.watchProcess(pid, PROC_GRADLE_TOOLING)
@@ -484,6 +499,27 @@ abstract class ProjectHandlerActivity : BaseEditorActivity() {
     } else {
       initializeProject()
     }
+  }
+
+  /**
+   * Handles Flutter roots without trying to initialize the Flutter root as a Gradle project.
+   *
+   * Returns true when this is a Flutter project and Gradle initialization must be skipped.
+   */
+  private fun prepareFlutterProjectWithoutGradle(): Boolean {
+    val manager = ProjectManagerImpl.getInstance()
+    val projectRoot = manager.projectDir
+    if (!FlutterProjectInspector.inspect(projectRoot).hasPubspec) {
+      return false
+    }
+
+    GeneralPreferences.lastOpenedProject = manager.projectDirPath
+    manager.projectInitialized = false
+    editorViewModel.isInitializing = false
+    editorViewModel.isBuildInProgress = false
+    supportActionBar?.subtitle = projectRoot.name
+    setStatus(getString(string.flutter_project_opened_no_gradle))
+    return true
   }
 
   protected open fun onProjectInitialized(result: InitializeResult) {
