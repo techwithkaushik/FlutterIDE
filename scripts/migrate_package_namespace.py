@@ -53,6 +53,12 @@ def main():
         changed = DEPENDENCY_COORDINATE.sub(
             lambda match: match.group(0).replace(NEW_DOTTED, OLD_DOTTED), changed
         )
+        # Tree-sitter runtime classes are supplied by a published artifact whose
+        # JVM packages still use the upstream namespace. Keep those direct imports
+        # stable while migrating our own *.treesitter.api wrappers.
+        changed = EXTERNAL_TREESITTER_IMPORT.sub(
+            lambda match: match.group(1) + "com.itsaky.androidide.treesitter.", changed
+        )
         if changed != text:
             path.write_text(changed, encoding="utf-8", newline="")
             edited += 1
