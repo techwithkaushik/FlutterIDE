@@ -99,7 +99,7 @@ constructor(
 
         val browseDartFiles = MainScreenAction(
           ACTION_BROWSE_DART_FILES,
-          R.string.flutter_browse_dart_files,
+          R.string.flutter_open_project,
           R.drawable.ic_folder)
 
         Collections.addAll(this,
