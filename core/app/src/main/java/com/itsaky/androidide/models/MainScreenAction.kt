@@ -97,7 +97,7 @@ constructor(
           R.string.flutter_project_inspector,
           R.drawable.ic_folder)
 
-        val browseDartFiles = MainScreenAction(
+        val openFlutterProject = MainScreenAction(
           ACTION_BROWSE_DART_FILES,
           R.string.flutter_open_project,
           R.drawable.ic_folder)
@@ -107,7 +107,7 @@ constructor(
           openProject,
           cloneGitRepository,
           inspectFlutterProject,
-          browseDartFiles,
+          openFlutterProject,
           openTerminal,
           preferences,
           donate,
