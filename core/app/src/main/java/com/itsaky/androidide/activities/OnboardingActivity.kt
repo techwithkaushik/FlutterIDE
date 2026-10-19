@@ -33,6 +33,7 @@ class OnboardingActivity : AppIntro2() {
 
   companion object {
     private const val KEY_ARCHCONFIG_WARNING_IS_SHOWN = "ide.archConfig.experimentalWarning.isShown"
+    private const val KEY_FLUTTER_ONBOARDING_COMPLETED = "flutteride.onboarding.completed"
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,11 +120,14 @@ class OnboardingActivity : AppIntro2() {
       return
     }
 
+    if (PermissionsFragment.areAllPermissionsGranted(this)) {
+      prefManager.putBoolean(KEY_FLUTTER_ONBOARDING_COMPLETED, true)
+    }
     tryNavigateToMainIfSetupIsCompleted()
   }
 
   private fun isSetupCompleted(): Boolean {
-    return StatPreferences.statConsentDialogShown &&
+    return prefManager.getBoolean(KEY_FLUTTER_ONBOARDING_COMPLETED, false) &&
       PermissionsFragment.areAllPermissionsGranted(this)
   }
 
