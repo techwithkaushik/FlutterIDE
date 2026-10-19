@@ -565,6 +565,10 @@
   <string name="idepref_jdkVersion_title">JDK version</string>
   <string name="idepref_jdkVersion_summary">Currently selected: %1$s (requires restart if changed)</string>
   <string name="flutter_project_inspector">Inspect Flutter project</string>
+  <string name="flutter_browse_dart_files">Browse Dart files</string>
+  <string name="flutter_dart_files_count">Dart files (%1$d)</string>
+  <string name="flutter_no_dart_files">No Dart files were found in this Flutter project.</string>
+  <string name="flutter_file_operation_failed">Could not read the selected Dart file. Check that the file still exists and is readable.</string>
   <string name="flutter_project_inspection_title">Flutter project check</string>
   <string name="flutter_project_status_ready">Flutter app structure detected. Dart editing and build integration are still being developed.</string>
   <string name="flutter_project_status_incomplete">Flutter pubspec.yaml found, but lib/main.dart is missing. This may be a package/plugin or an incomplete app.</string>
