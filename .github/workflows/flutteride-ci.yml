@@ -52,26 +52,54 @@ jobs:
           IDE_SIGNING_STORE_PASS: android
           IDE_SIGNING_KEY_PASS: android
 
-      - name: Verify debug APK output
+      - name: Verify split APK outputs
         if: success()
         shell: bash
         run: |
           set -euo pipefail
-          apk="core/app/build/outputs/apk/debug/app-debug.apk"
-          test -s "$apk" || {
-            echo "::error::Expected debug APK was not generated at $apk"
-            find core/app/build/outputs/apk -type f -name '*.apk' -print || true
-            exit 1
-          }
-          echo "APK_PATH=$apk" >> "$GITHUB_ENV"
-          echo "APK_SIZE_BYTES=$(stat -c '%s' "$apk")" >> "$GITHUB_ENV"
+          apk_dir="core/app/build/outputs/apk/debug"
+          expected=(
+            "app-arm64-v8a-debug.apk"
+            "app-armeabi-v7a-debug.apk"
+            "app-x86_64-debug.apk"
+          )
+          for apk_name in "${expected[@]}"; do
+            apk="$apk_dir/$apk_name"
+            if [[ ! -s "$apk" ]]; then
+              echo "::error::Expected split APK not found: $apk"
+              echo "Available APK outputs:"
+              find core/app/build/outputs/apk -type f -name '*.apk' -print || true
+              exit 1
+            fi
+            printf 'Found %s (%s)\n' "$apk" "$(du -h "$apk" | cut -f1)"
+          done
 
-      - name: Upload debug APK as its own artifact
+      - name: Upload arm64-v8a APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: flutteride-host-debug-apk
-          path: core/app/build/outputs/apk/debug/app-debug.apk
+          name: flutteride-debug-arm64-v8a
+          path: core/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload armeabi-v7a APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutteride-debug-armeabi-v7a
+          path: core/app/build/outputs/apk/debug/app-armeabi-v7a-debug.apk
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
+      - name: Upload x86_64 APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutteride-debug-x86_64
+          path: core/app/build/outputs/apk/debug/app-x86_64-debug.apk
           if-no-files-found: error
           compression-level: 0
           retention-days: 7
