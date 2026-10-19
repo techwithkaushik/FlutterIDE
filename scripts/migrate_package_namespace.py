@@ -18,6 +18,9 @@ DEPENDENCY_COORDINATE = re.compile(
 LEGACY_DEPENDENCY_COORDINATE = re.compile(
     r"com\.itsaky\.androidide\.(?:build|treesitter|gradle):"
 )
+LEGACY_TREESITTER_IMPORT = re.compile(
+    r"(?m)^(\s*import\s+)com\.itsaky\.androidide\.treesitter\.(?!api\.)"
+)
 EXTERNAL_TREESITTER_IMPORT = re.compile(
     r"(?m)^(\s*import\s+)org\.techwithkaushik\.flutteride\.treesitter\.(?!api\.)"
 )
@@ -99,6 +102,10 @@ def main():
             continue
         # Existing dependency group IDs in the version catalog are intentional.
         checked = LEGACY_DEPENDENCY_COORDINATE.sub("external-dependency:", text)
+        # Direct Tree-sitter runtime classes still ship under the upstream JVM package.
+        checked = LEGACY_TREESITTER_IMPORT.sub(
+            lambda match: match.group(1) + "external-treesitter.", checked
+        )
         if OLD_DOTTED in checked or OLD_PATH in checked or OLD_PATH in name:
             remaining.append(name)
     print(f"Package migration: edited {edited} text files; moved {moved} tracked paths.")
