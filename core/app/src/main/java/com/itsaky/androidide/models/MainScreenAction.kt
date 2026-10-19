@@ -48,6 +48,7 @@ constructor(
     const val ACTION_DONATE = 5
     const val ACTION_DOCS = 6
     const val ACTION_INSPECT_FLUTTER_PROJECT = 7
+    const val ACTION_BROWSE_DART_FILES = 8
 
     /**
      * Get all main screen actions.
@@ -96,11 +97,17 @@ constructor(
           R.string.flutter_project_inspector,
           R.drawable.ic_folder)
 
+        val browseDartFiles = MainScreenAction(
+          ACTION_BROWSE_DART_FILES,
+          R.string.flutter_browse_dart_files,
+          R.drawable.ic_folder)
+
         Collections.addAll(this,
           createProject,
           openProject,
           cloneGitRepository,
           inspectFlutterProject,
+          browseDartFiles,
           openTerminal,
           preferences,
           donate,
