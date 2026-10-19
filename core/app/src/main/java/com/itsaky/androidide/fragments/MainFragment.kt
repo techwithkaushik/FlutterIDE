@@ -133,17 +133,17 @@ class MainFragment : BaseFragment() {
     }
     val message = buildString {
       append(statusMessage)
-      append("\\n\\n")
+      append(System.lineSeparator()).append(System.lineSeparator())
       append(getString(string.flutter_project_path, info.root.absolutePath))
-      append("\\n\\n")
+      append(System.lineSeparator()).append(System.lineSeparator())
       append(getString(
         string.flutter_project_open_editor_hint,
         if (info.hasMainDart) getString(android.R.string.yes) else getString(android.R.string.no),
         if (info.hasAndroidHost) getString(android.R.string.yes) else getString(android.R.string.no)
       ))
       if (info.issues.isNotEmpty()) {
-        append("\\n\\n")
-        append(info.issues.joinToString(separator = "\\n• ", prefix = "• "))
+        append(System.lineSeparator()).append(System.lineSeparator())
+        append(info.issues.joinToString(separator = System.lineSeparator() + "• ", prefix = "• "))
       }
     }
 
