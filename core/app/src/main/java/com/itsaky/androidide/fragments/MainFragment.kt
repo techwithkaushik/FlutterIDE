@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
@@ -19,7 +18,6 @@ import com.itsaky.androidide.app.BaseIDEActivity
 import com.itsaky.androidide.common.databinding.LayoutDialogProgressBinding
 import com.itsaky.androidide.databinding.FragmentMainBinding
 import com.itsaky.androidide.flutter.FlutterProjectInspector
-import com.itsaky.androidide.flutter.FlutterProjectFiles
 import com.itsaky.androidide.models.MainScreenAction
 import com.itsaky.androidide.preferences.databinding.LayoutDialogTextInputBinding
 import com.itsaky.androidide.resources.R.string
@@ -70,7 +68,7 @@ class MainFragment : BaseFragment() {
             inspectFlutterProject(root)
           }
           MainScreenAction.ACTION_BROWSE_DART_FILES -> pickDirectory { root ->
-            browseDartFiles(root)
+            prepareFlutterProject(root)
           }
           MainScreenAction.ACTION_OPEN_TERMINAL -> startActivity(
             Intent(requireActivity(), TerminalActivity::class.java))
@@ -116,71 +114,45 @@ class MainFragment : BaseFragment() {
     (requireActivity() as MainActivity).openProject(root)
   }
 
-  private fun browseDartFiles(root: File) {
-    viewLifecycleScope.launch(Dispatchers.IO) {
-      val result = runCatching { FlutterProjectFiles.listDartFiles(root) }
-      withContext(Dispatchers.Main) {
-        if (!isAdded) return@withContext
-        val files = result.getOrElse {
-          DialogUtils.newMaterialDialogBuilder(requireContext())
-            .setTitle(string.flutter_browse_dart_files)
-            .setMessage(it.localizedMessage ?: getString(string.flutter_file_operation_failed))
-            .setPositiveButton(android.R.string.ok, null)
-            .show()
-          return@withContext
-        }
-        if (files.isEmpty()) {
-          DialogUtils.newMaterialDialogBuilder(requireContext())
-            .setTitle(string.flutter_browse_dart_files)
-            .setMessage(string.flutter_no_dart_files)
-            .setPositiveButton(android.R.string.ok, null)
-            .show()
-          return@withContext
-        }
-        DialogUtils.newMaterialDialogBuilder(requireContext())
-          .setTitle(getString(string.flutter_dart_files_count, files.size))
-          .setItems(files.map { it.relativePath }.toTypedArray()) { _, index ->
-            previewDartFile(root, files[index].relativePath)
-          }
-          .setNegativeButton(android.R.string.cancel, null)
-          .show()
-      }
+  /**
+   * Analyze the selected Flutter root, then hand it to the existing IDE editor.
+   * FlutterIDE reuses AndroidIDE's file tree, tabs, editor and save actions.
+   */
+  private fun prepareFlutterProject(root: File) {
+    val info = FlutterProjectInspector.inspect(root)
+    if (!info.hasPubspec) {
+      inspectFlutterProject(root)
+      return
     }
-  }
 
-  private fun previewDartFile(root: File, relativePath: String) {
-    viewLifecycleScope.launch(Dispatchers.IO) {
-      val result = runCatching {
-        FlutterProjectFiles.readDartFile(root, File(root, relativePath))
-      }
-      withContext(Dispatchers.Main) {
-        if (!isAdded) return@withContext
-        val source = result.getOrElse {
-          DialogUtils.newMaterialDialogBuilder(requireContext())
-            .setTitle(relativePath)
-            .setMessage(it.localizedMessage ?: getString(string.flutter_file_operation_failed))
-            .setPositiveButton(android.R.string.ok, null)
-            .show()
-          return@withContext
-        }
-        val sourceView = TextView(requireContext()).apply {
-          text = source
-          typeface = android.graphics.Typeface.MONOSPACE
-          textSize = 12f
-          setTextIsSelectable(true)
-          setPadding(20, 16, 20, 16)
-        }
-        val scrollView = ScrollView(requireContext()).apply {
-          addView(sourceView)
-          isFillViewport = true
-        }
-        DialogUtils.newMaterialDialogBuilder(requireContext())
-          .setTitle(relativePath)
-          .setView(scrollView)
-          .setPositiveButton(android.R.string.ok, null)
-          .show()
+    val statusMessage = when (info.status) {
+      FlutterProjectInspector.Status.READY -> getString(string.flutter_project_status_ready)
+      FlutterProjectInspector.Status.INCOMPLETE -> getString(string.flutter_project_status_incomplete)
+      FlutterProjectInspector.Status.NOT_A_FLUTTER_PROJECT -> getString(string.flutter_project_status_not_flutter)
+      FlutterProjectInspector.Status.NOT_A_DIRECTORY -> getString(string.flutter_project_status_not_directory)
+    }
+    val message = buildString {
+      append(statusMessage)
+      append("\\n\\n")
+      append(getString(string.flutter_project_path, info.root.absolutePath))
+      append("\\n\\n")
+      append(getString(
+        string.flutter_project_open_editor_hint,
+        if (info.hasMainDart) getString(android.R.string.yes) else getString(android.R.string.no),
+        if (info.hasAndroidHost) getString(android.R.string.yes) else getString(android.R.string.no)
+      ))
+      if (info.issues.isNotEmpty()) {
+        append("\\n\\n")
+        append(info.issues.joinToString(separator = "\\n• ", prefix = "• "))
       }
     }
+
+    DialogUtils.newMaterialDialogBuilder(requireContext())
+      .setTitle(string.flutter_project_inspection_title)
+      .setMessage(message)
+      .setPositiveButton(string.flutter_open_in_editor) { _, _ -> openProject(info.root) }
+      .setNegativeButton(android.R.string.cancel, null)
+      .show()
   }
 
   private fun inspectFlutterProject(root: File) {
