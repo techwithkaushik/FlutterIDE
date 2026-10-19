@@ -72,6 +72,7 @@
       android:launchMode="singleTop"
       android:name=".activities.editor.EditorActivityKt"/>
     <activity android:name=".activities.PreferencesActivity" />
+    <activity android:name=".activities.AndroidToolchainSetupActivity" />
     <activity android:name=".activities.AboutActivity" />
     <activity android:name=".activities.ContributorsActivity" />
     <activity
@@ -79,7 +80,7 @@
       android:windowSoftInputMode="adjustResize" />
 
     <provider
-      android:authorities="com.itsaky.androidide.documents"
+      android:authorities="${applicationId}.documents"
       android:exported="true"
       android:grantUriPermissions="true"
       android:name=".provider.IDEDocumentsProvider"

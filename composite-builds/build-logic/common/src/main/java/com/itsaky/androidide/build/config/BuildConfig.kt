@@ -24,7 +24,7 @@ import org.gradle.api.JavaVersion
  */
 object BuildConfig {
 
-  /** AndroidIDE's package name. */
+  /** Legacy source namespace used for generated R and BuildConfig references. */
   const val packageName = "com.itsaky.androidide"
 
   /** The compile SDK version. */

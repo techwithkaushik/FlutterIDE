@@ -17,5 +17,6 @@
 
 <resources>
   <!--  Required by F-Droid-->
-  <string name="app_name" translatable="false">AndroidIDE</string>
+  <string name="app_name" translatable="false">FlutterIDE</string>
+  <string name="flutter_project_opened_no_gradle">Flutter project opened. Android Gradle sync is skipped for this project; Dart language support and Flutter toolchain integration are not configured yet.</string>
 </resources>

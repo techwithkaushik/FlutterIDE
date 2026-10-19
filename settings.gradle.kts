@@ -116,7 +116,7 @@ if (FDroidConfig.hasRead && FDroidConfig.isFDroidBuild) {
   }
 }
 
-rootProject.name = "AndroidIDE"
+rootProject.name = "FlutterIDE"
 
 // keep this sorted alphabetically
 include(
@@ -143,9 +143,7 @@ include(
   ":java:lsp",
   ":logging:idestats",
   ":logging:logger",
-  ":logging:logsender",
-  ":logging:logsender-sample",
-  ":termux:application",
+  ":logging:logsender",  ":termux:application",
   ":termux:emulator",
   ":termux:shared",
   ":termux:view",
