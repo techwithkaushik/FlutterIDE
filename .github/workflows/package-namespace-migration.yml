@@ -29,6 +29,8 @@ jobs:
           distribution: temurin
           java-version: "17"
       - uses: gradle/actions/setup-gradle@v4
+      - name: Validate migration script syntax
+        run: python3 -m py_compile scripts/migrate_package_namespace.py
       - name: Apply namespace migration
         run: python3 scripts/migrate_package_namespace.py
       - name: Install debug development keystore
