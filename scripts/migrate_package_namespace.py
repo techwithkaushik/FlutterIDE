@@ -18,6 +18,9 @@ DEPENDENCY_COORDINATE = re.compile(
 LEGACY_DEPENDENCY_COORDINATE = re.compile(
     r"com\.itsaky\.androidide\.(?:build|treesitter|gradle):"
 )
+EXTERNAL_TREESITTER_IMPORT = re.compile(
+    r"(?m)^(\s*import\s+)org\.techwithkaushik\.flutteride\.treesitter\.(?!api\.)"
+)
 
 
 def tracked_paths():
