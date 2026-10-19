@@ -566,6 +566,9 @@
   <string name="idepref_jdkVersion_summary">Currently selected: %1$s (requires restart if changed)</string>
   <string name="flutter_project_inspector">Inspect Flutter project</string>
   <string name="flutter_browse_dart_files">Browse Dart files</string>
+  <string name="flutter_open_project">Open Flutter project</string>
+  <string name="flutter_open_in_editor">Open in editor</string>
+  <string name="flutter_project_open_editor_hint">Editor will open this project using the existing file tree and editor. Main Dart file found: %1$s; Android platform folder found: %2$s.</string>
   <string name="flutter_dart_files_count">Dart files (%1$d)</string>
   <string name="flutter_no_dart_files">No Dart files were found in this Flutter project.</string>
   <string name="flutter_file_operation_failed">Could not read the selected Dart file. Check that the file still exists and is readable.</string>
