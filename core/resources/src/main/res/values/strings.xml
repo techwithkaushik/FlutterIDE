@@ -16,6 +16,11 @@
   <string name="title_github" translatable="false">GitHub</string>
   <string name="need_help">Need Help?</string>
   <string name="ide_preferences">IDE preferences</string>
+  <string name="android_toolchain_setup_title">Android toolchain (optional)</string>
+  <string name="android_toolchain_setup_description">Install or repair the Android SDK, JDK, Git and OpenSSH for legacy Android projects. FlutterIDE welcome no longer requires these tools.</string>
+  <string name="android_toolchain_setup_action">Configure Android SDK and JDK</string>
+  <string name="flutter_setup_title">Get started with Flutter and Dart</string>
+  <string name="flutter_setup_message">FlutterIDE is focused on Flutter and Dart projects. Open a project folder containing pubspec.yaml to inspect its structure. Flutter project creation, Dart editing, analysis and build integration are being added in phases. Android SDK and JDK setup is optional and available in Settings.</string>
   <string name="discussions_on_telegram">Discussions on Telegram</string>
   <string name="official_tg_channel">Official Telegram Channel</string>
   <string name="msg_empty_view">No data</string>
@@ -522,8 +527,8 @@
   <string name="title_install_tools">SDK Installation</string>
   <string name="subtitle_install_tools">Install the development tools</string>
   <string name="msg_install_tools">The development tools must be installed for the IDE to work. Clicking the done button will open terminal to install the tools. To install, follow the instructions <![CDATA[ <a href="https://docs.androidide.com/tutorials/get-started.html">here</a>.<br/><br/>Or read the <a href="https://docs.androidide.com/">documentation</a>]]>.</string>
-  <string name="greeting_title">Welcome</string>
-  <string name="greeting_subtitle">Learn, build, launch. All on your Android.</string>
+  <string name="greeting_title">Welcome to FlutterIDE</string>
+  <string name="greeting_subtitle">Build Flutter apps. Edit Dart. Keep your workflow lightweight.</string>
   <string name="title_grant">Grant</string>
   <string name="permission_title_storage">Storage</string>
   <string name="permission_desc_storage">Required to access project files.</string>
