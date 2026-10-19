@@ -52,13 +52,28 @@ jobs:
           IDE_SIGNING_STORE_PASS: android
           IDE_SIGNING_KEY_PASS: android
 
-      - name: Upload debug APK
+      - name: Verify debug APK output
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk="core/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$apk" || {
+            echo "::error::Expected debug APK was not generated at $apk"
+            find core/app/build/outputs/apk -type f -name '*.apk' -print || true
+            exit 1
+          }
+          echo "APK_PATH=$apk" >> "$GITHUB_ENV"
+          echo "APK_SIZE_BYTES=$(stat -c '%s' "$apk")" >> "$GITHUB_ENV"
+
+      - name: Upload debug APK as its own artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: flutteride-host-debug-apk
-          path: core/app/build/outputs/apk/**/*.apk
+          path: core/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          compression-level: 0
           retention-days: 7
 
   unit-tests:
